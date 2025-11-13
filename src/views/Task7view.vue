@@ -1,413 +1,426 @@
 <template>
-  <div class="task-container">
-    <div class="header-section">
-      <h1>Fujairah – Al Bidyah Mosque</h1>
-      <h2>Chronicles of Time</h2>
-      <p class="challenge-instruction">Arrange the historical events in correct chronological order by dragging and dropping.</p>
-      <div class="progress-bar">
-        <div class="progress" :style="{ width: progress + '%' }"></div>
-      </div>
-    </div>
-    
-    <div class="timeline-container">
-      <div 
-        v-for="(event, index) in events" 
-        :key="event.id"
-        class="timeline-event"
-        :class="{ 'correct': event.correctPosition }"
-        draggable="true"
-        @dragstart="onDragStart($event, index)"
-        @dragover.prevent
-        @drop="onDrop($event, index)"
-        @dragend="onDragEnd"
-      >
-        <div class="event-content">
-          <div class="event-emoji">{{ event.emoji }}</div>
-          <div class="event-details">
-            <h3>{{ event.title }}</h3>
-            <p class="event-year">{{ event.year }}</p>
-            <p class="event-description">{{ event.description }}</p>
+  <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 p-3 md:p-6 transition-colors duration-300">
+    <div class="max-w-3xl mx-auto">
+      <!-- Header Section -->
+      <div class="bg-white rounded-xl shadow-md p-5 mb-6 transition-all duration-200 hover:shadow-sm">
+        <div class="text-center">
+          <span class="inline-block px-2.5 py-0.5 text-[11px] font-semibold text-blue-600 bg-blue-100 rounded-full mb-2">HISTORICAL TIMELINE</span>
+          <h1 class="text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+            Fujairah – Al Bidyah Mosque
+          </h1>
+          <div class="w-16 h-0.5 bg-gradient-to-r from-blue-400 to-indigo-400 mx-auto my-3 rounded-full"></div>
+          <h2 class="text-lg text-gray-600 font-medium">Chronicles of Time</h2>
+        </div>
+        
+        <p class="text-sm text-gray-600 text-center max-w-2xl mx-auto mt-3 mb-4 leading-relaxed">
+          Match each historical event with its corresponding year by dragging and dropping the year cards below.
+        </p>
+        
+        <!-- Progress Bar -->
+        <div class="mt-5">
+          <div class="flex justify-between text-xs text-gray-500 mb-1">
+            <span>Progress</span>
+            <span class="font-medium">{{ Math.round(progress) }}%</span>
           </div>
-          <div v-if="event.correctPosition" class="correct-badge">✓</div>
+          <div class="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
+            <div 
+              class="h-full bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 transition-all duration-500 ease-out" 
+              :style="{ width: `${progress}%` }"
+            ></div>
+          </div>
         </div>
       </div>
-    </div>
-    
-    <div v-if="allCorrect" class="success-message">
-      <h3>🎉 Correct Order! 🎉</h3>
-      <p>You've successfully arranged the events in chronological order!</p>
-      <div class="correct-order">
-        <div v-for="event in correctOrder" :key="event.id" class="correct-event">
-          <span class="event-number">{{ event.position }}</span>
-          <span class="event-title">{{ event.title }} ({{ event.year }})</span>
+      
+      <!-- Years Section -->
+      <div class="bg-white/90 rounded-xl shadow-sm p-4 mb-6 border border-gray-100">
+        <div class="text-center mb-4">
+          <h3 class="text-lg font-semibold text-gray-800">Years</h3>
+          <p class="text-xs text-gray-500 mt-0.5">Drag and drop to match with events</p>
+        </div>
+        <div class="flex flex-wrap justify-center gap-2">
+          <div 
+            v-for="(event, index) in years" 
+            :key="'year-' + event.id"
+            draggable="true"
+            @dragstart="onDragStart($event, index, 'year')"
+            @dragend="onDragEnd"
+            @touchstart="onTouchStart($event, index, 'year')"
+            @touchmove="onTouchMove"
+            @touchend="onTouchEnd($event)"
+            class="px-4 py-2 rounded-lg bg-gradient-to-br from-blue-50 to-white text-blue-700 font-semibold text-sm flex items-center justify-center min-w-[90px] shadow-sm border border-blue-100 cursor-grab active:cursor-grabbing hover:shadow transition-all duration-150 hover:-translate-y-0.5"
+            :class="{ 
+              'opacity-50': isDragging && draggedItemIndex === index,
+              'ring-1 ring-blue-400': isDragging && draggedItemIndex === index
+            }"
+          >
+            <span class="text-base font-bold">{{ event.year }}</span>
+          </div>
         </div>
       </div>
+
+      <!-- Events List -->
+      <div class="mb-8">
+        <div class="text-center mb-4">
+          <h3 class="text-lg font-semibold text-gray-800">Historical Events</h3>
+          <p class="text-xs text-gray-500 mt-0.5">Drop years onto the matching events</p>
+        </div>
+        
+        <div class="grid grid-cols-1 gap-3">
+          <div 
+            v-for="(event, index) in events" 
+            :key="event.id"
+            class="bg-white/95 rounded-lg shadow-sm p-4 border transition-all duration-200 hover:shadow-sm"
+            :class="{
+              'border-green-200 bg-green-50/30': event.correctPosition,
+              'border-gray-100 hover:border-blue-200': !event.correctPosition && !isDraggingOver,
+              'border-blue-300 bg-blue-50/30': isDraggingOver === index,
+              'ring-1 ring-blue-400': isDraggingOver === index
+            }"
+            @dragover.prevent="isDraggingOver = index"
+            @dragleave="isDraggingOver = null"
+            @drop="onDrop($event, index)"
+            :data-index="index"
+          >
+            <div class="flex items-start gap-3">
+              <div class="flex-shrink-0 p-2.5 rounded-lg bg-gradient-to-br from-blue-50 to-white shadow-inner border border-blue-50">
+                <span class="text-2xl">{{ event.emoji }}</span>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex justify-between items-start gap-2">
+                  <h3 class="text-base font-semibold text-gray-800 leading-snug">{{ event.title }}</h3>
+                  <button 
+                    v-if="event.matchedYear"
+                    @click.stop="removeYear(index)"
+                    class="text-gray-300 hover:text-red-500 transition-colors p-0.5 -mt-1 -mr-1"
+                    aria-label="Remove year"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                  </button>
+                </div>
+                <p class="text-gray-600 text-xs mt-1 leading-relaxed">{{ event.description }}</p>
+                <div class="mt-2">
+                  <div 
+                    v-if="event.matchedYear"
+                    class="inline-flex items-center px-3 py-1.5 rounded-md text-xs font-medium border transition-colors"
+                    :class="{
+                      'bg-green-50 text-green-800 border-green-200': event.correctPosition,
+                      'bg-red-50 text-red-800 border-red-200': !event.correctPosition,
+                      'animate-pulse': isDraggingOver === index
+                    }"
+                  >
+                    <span class="mr-1.5">{{ event.matchedYear.year }}</span>
+                    <span v-if="event.correctPosition" class="flex items-center justify-center w-4 h-4 bg-green-500 text-white rounded-full">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-2.5 w-2.5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                      </svg>
+                    </span>
+                  </div>
+                  <div v-else class="h-8 w-20 bg-gray-100 rounded-md animate-pulse"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Success message handled by SweetAlert2 -->
     </div>
   </div>
 </template>
 
 <script>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
+import Swal from 'sweetalert2';
+import confetti from 'canvas-confetti';
 
 export default {
   name: 'Task7View',
   setup() {
-    const events = ref([
-      {
-        id: 1,
-        title: 'Construction of Al Bidyah Mosque',
-        year: '1446 CE',
-        description: 'Earliest known mosque in the UAE, representing faith and heritage.',
-        emoji: '🕌',
-        correctPosition: false,
-        position: 1
-      },
-      {
-        id: 2,
-        title: 'Discovery of Oil',
-        year: '1958',
-        description: 'Marked the beginning of modern economic transformation and rapid development. (Commercial production from Abu Dhabi in 1962)',
-        emoji: '🛢️',
-        correctPosition: false,
-        position: 2
-      },
-      {
-        id: 3,
-        title: 'Formation of the UAE Federation',
-        year: '1971',
-        description: 'The union of seven emirates into one nation of shared vision and identity.',
-        emoji: '🇦🇪',
-        correctPosition: false,
-        position: 3
+    const allEvents = [
+      { id: 1, title: 'Construction of Al Bidyah Mosque', year: '1446 CE', description: 'Earliest known mosque in the UAE.', emoji: '🕌', correctOrder: 1, correctPosition: false },
+      { id: 2, title: 'Discovery of Oil', year: '1958', description: 'Marked beginning of modern UAE development.', emoji: '🛢️', correctOrder: 2, correctPosition: false },
+      { id: 3, title: 'Formation of UAE Federation', year: '1971', description: 'Union of seven emirates.', emoji: '🇦🇪', correctOrder: 3, correctPosition: false }
+    ];
+
+    const shuffleArray = (array) => {
+      const newArray = [...array];
+      for (let i = newArray.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
       }
-    ]);
+      return newArray;
+    };
+
+    const events = ref(shuffleArray(allEvents).map((event, index) => ({ ...event, position: index + 1, matchedYear: null })));
+    const years = ref([...allEvents].sort((a, b) => a.correctOrder - b.correctOrder).map(e => ({ ...e })));
 
     const draggedItem = ref(null);
-
-    const correctOrder = computed(() => {
-      return [...events.value]
-        .sort((a, b) => a.position - b.position)
-        .map((event, index) => ({
-          ...event,
-          position: index + 1
-        }));
-    });
-
-    const allCorrect = computed(() => {
-      return events.value.every((event, index) => event.position === index + 1);
-    });
+    const isDragging = ref(false);
+    const draggedItemIndex = ref(null);
+    const isDraggingOver = ref(null);
 
     const progress = computed(() => {
-      const correctCount = events.value.filter((event, index) => 
-        event.position === index + 1
-      ).length;
+      const correctCount = events.value.filter(event => event.matchedYear?.year === event.year).length;
       return (correctCount / events.value.length) * 100;
     });
 
-    const onDragStart = (event, index) => {
-      draggedItem.value = index;
-      event.target.classList.add('dragging');
+    const updateEventStatus = (event) => {
+      event.correctPosition = event.matchedYear?.year === event.year;
     };
 
-    const onDragEnd = (event) => {
-      event.target.classList.remove('dragging');
+    const onDragStart = (e, index, type) => {
+      draggedItem.value = { index, type };
+      isDragging.value = true;
+      draggedItemIndex.value = index;
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', '');
+    };
+
+    const onDragEnd = () => {
+      isDragging.value = false;
       draggedItem.value = null;
-      checkPositions();
+      draggedItemIndex.value = null;
+      
+      // Ensure any remaining touch clones are cleaned up
+      if (touchClone) {
+        cleanupTouchClone();
+      }
     };
 
-    const onDrop = (event, dropIndex) => {
-      event.preventDefault();
-      if (draggedItem.value === null || draggedItem.value === dropIndex) return;
-      
-      const newEvents = [...events.value];
-      const [movedItem] = newEvents.splice(draggedItem.value, 1);
-      newEvents.splice(dropIndex, 0, movedItem);
-      
-      // Update positions based on new order
-      newEvents.forEach((event, index) => {
-        event.position = index + 1;
-      });
-      
-      events.value = newEvents;
+    const onDrop = (e, dropIndex) => {
+      e.preventDefault();
+      if (draggedItem.value?.type === 'year') {
+        const year = years.value[draggedItem.value.index];
+        events.value[dropIndex].matchedYear = { ...year };
+        updateEventStatus(events.value[dropIndex]);
+      }
+      isDraggingOver.value = null;
     };
 
-    const checkPositions = () => {
-      events.value = events.value.map(event => ({
+    // Enhanced touch events for iPad
+    let touchClone = null;
+    let touchStartTime = 0;
+    let touchStartX = 0;
+    let touchStartY = 0;
+    const TOUCH_MOVE_THRESHOLD = 5; // pixels to move before starting drag
+    
+    const onTouchStart = (e, index, type) => {
+      // Prevent default to reduce touch delay
+      e.preventDefault();
+      
+      const touch = e.touches[0];
+      touchStartX = touch.clientX;
+      touchStartY = touch.clientY;
+      touchStartTime = Date.now();
+      
+      // Start drag immediately
+      draggedItem.value = { index, type };
+      isDragging.value = true;
+      draggedItemIndex.value = index;
+      
+      // Create and position the touch clone
+      touchClone = e.target.cloneNode(true);
+      touchClone.style.position = 'fixed';
+      touchClone.style.pointerEvents = 'none';
+      touchClone.style.left = `${touch.pageX}px`;
+      touchClone.style.top = `${touch.pageY}px`;
+      touchClone.style.opacity = '0.9';
+      touchClone.style.transform = 'translate(-50%, -50%) scale(1.1)';
+      touchClone.style.transition = 'transform 0.1s ease-out';
+      touchClone.style.zIndex = '1000';
+      touchClone.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+      touchClone.style.borderRadius = '0.5rem';
+      document.body.appendChild(touchClone);
+      
+      // Force a reflow to ensure the clone is rendered before applying transform
+      void touchClone.offsetWidth;
+      touchClone.style.transform = 'translate(-50%, -50%) scale(1.1)';
+    };
+
+    const onTouchMove = (e) => {
+      if (!touchClone || !isDragging.value) return;
+      
+      const touch = e.touches[0];
+      const deltaX = Math.abs(touch.clientX - touchStartX);
+      const deltaY = Math.abs(touch.clientY - touchStartY);
+      
+      // Only start dragging if moved beyond threshold
+      if (deltaX < TOUCH_MOVE_THRESHOLD && deltaY < TOUCH_MOVE_THRESHOLD) {
+        return;
+      }
+      
+      // Update clone position
+      touchClone.style.left = `${touch.pageX}px`;
+      touchClone.style.top = `${touch.pageY}px`;
+      
+      // Find drop target
+      const el = document.elementFromPoint(touch.clientX, touch.clientY);
+      if (el) {
+        const dropTarget = el.closest('[data-index]');
+        if (dropTarget && dropTarget.dataset.index) {
+          isDraggingOver.value = Number(dropTarget.dataset.index);
+        } else {
+          isDraggingOver.value = null;
+        }
+      } else {
+        isDraggingOver.value = null;
+      }
+      
+      // Prevent scrolling while dragging
+      e.preventDefault();
+    };
+
+    const cleanupTouchClone = () => {
+      if (!touchClone) return;
+      
+      // Immediately hide the clone to prevent any flicker
+      touchClone.style.opacity = '0';
+      touchClone.style.pointerEvents = 'none';
+      
+      // Remove from DOM after a short delay to allow any animations to complete
+      setTimeout(() => {
+        if (touchClone && touchClone.parentNode) {
+          touchClone.remove();
+        }
+        touchClone = null;
+      }, 50);
+    };
+
+    const onTouchEnd = (e) => {
+      if (!touchClone) return;
+      
+      // Prevent any default behavior that might interfere
+      e.preventDefault();
+      
+      // If we're over a valid drop target, handle the drop
+      if (isDraggingOver.value !== null) {
+        onDrop(e, isDraggingOver.value);
+      }
+      
+      // Clean up the touch clone
+      cleanupTouchClone();
+      
+      // Reset drag state
+      onDragEnd();
+      
+      // Reset the dragging over state
+      isDraggingOver.value = null;
+    };
+
+    const removeYear = (index) => {
+      events.value[index].matchedYear = null;
+      events.value[index].correctPosition = false;
+    };
+
+    const resetGame = () => {
+      events.value = shuffleArray(allEvents).map((event, index) => ({
         ...event,
-        correctPosition: event.position === event.id
+        position: index + 1,
+        matchedYear: null,
+        correctPosition: false
       }));
     };
 
+    watch(() => events.value.map(e => e.matchedYear?.year), () => {
+      if (events.value.every(e => e.matchedYear?.year === e.year)) {
+        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+        Swal.fire({
+          title: '🎉 Well Done!',
+          text: 'All years are matched!',
+          icon: 'success',
+          confirmButtonText: 'Play Again!',
+          showCancelButton: false,
+          allowOutsideClick: false
+        }).then((result) => {
+          if (result.isConfirmed) {
+            resetGame();
+          }
+        });
+      }
+    }, { deep: true });
+
     return {
       events,
-      draggedItem,
-      correctOrder,
-      allCorrect,
+      years,
       progress,
+      isDragging,
+      isDraggingOver,
+      draggedItemIndex,
       onDragStart,
       onDragEnd,
       onDrop,
-      checkPositions
+      removeYear,
+      onTouchStart,
+      onTouchMove,
+      onTouchEnd
     };
   }
 };
 </script>
 
-<style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
-
-* {
-  box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
+<style>
+/* Make the touch target larger on mobile */
+@media (hover: none) {
+  [draggable="true"] {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  
+  .touch-target {
+    min-height: 48px;
+    min-width: 48px;
+  }
 }
 
-.task-container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
-  background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
-  border-radius: 15px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
 }
 
-.header-section {
-  background: white;
-  padding: 25px;
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.02);
   border-radius: 10px;
-  margin-bottom: 30px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
 }
 
-h1 {
-  color: #2c3e50;
-  text-align: center;
-  margin: 0 0 10px 0;
-  font-size: 2.2em;
-  font-weight: 700;
-  background: linear-gradient(90deg, #3498db, #9b59b6);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
 }
 
-h2 {
-  color: #7f8c8d;
-  text-align: center;
-  margin: 0 0 20px 0;
-  font-weight: 500;
-  font-size: 1.5em;
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.2);
 }
 
-.challenge-instruction {
-  text-align: center;
-  color: #555;
-  margin: 0 0 20px 0;
-  font-size: 1.1em;
-  line-height: 1.6;
+/* Smooth transitions */
+* {
+  transition: background-color 0.2s, border-color 0.2s, transform 0.2s, box-shadow 0.2s;
 }
 
-.progress-bar {
-  width: 100%;
-  height: 10px;
-  background: #ecf0f1;
-  border-radius: 5px;
-  margin-top: 20px;
-  overflow: hidden;
-}
-
-.progress {
-  height: 100%;
-  background: linear-gradient(90deg, #2ecc71, #3498db);
-  width: 0%;
-  transition: width 0.5s ease;
-  border-radius: 5px;
-}
-
-.timeline-container {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  margin: 30px 0;
-}
-
-.timeline-event {
-  background: white;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  transition: all 0.3s ease;
-  cursor: move;
-  position: relative;
-  border: 2px solid #e0e6ed;
-}
-
-.timeline-event:hover {
-  transform: translateX(5px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
-}
-
-.timeline-event.dragging {
-  opacity: 0.5;
-  transform: scale(0.98);
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-.timeline-event.correct {
-  border-color: #2ecc71;
-  background-color: #e8f7e8;
-  padding-right: 50px;
-}
-
-.timeline-event.correct::after {
-  content: '✓';
-  position: absolute;
-  right: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 30px;
-  height: 30px;
-  background: #2ecc71;
-  color: white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1em;
-}
-
-.event-content {
-  display: flex;
-  align-items: flex-start;
-  gap: 15px;
-}
-
-.event-emoji {
-  font-size: 2em;
-  line-height: 1;
-  margin-top: 5px;
-}
-
-.event-details {
-  flex: 1;
-}
-
-h3 {
-  margin: 0 0 5px 0;
-  color: #2c3e50;
-  font-size: 1.2em;
-}
-
-.event-year {
-  margin: 0 0 8px 0;
-  color: #3498db;
-  font-weight: 600;
-  font-size: 1.1em;
-}
-
-.event-description {
-  margin: 0;
-  color: #555;
-  line-height: 1.5;
-  font-size: 0.95em;
-}
-
-.success-message {
-  background: white;
-  border-radius: 12px;
-  padding: 30px;
-  margin-top: 30px;
-  text-align: center;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-  animation: fadeIn 0.6s ease-out;
-}
-
-.success-message h3 {
-  font-size: 1.8em;
-  margin-bottom: 15px;
-  color: #2c3e50;
-}
-
-.success-message p {
-  color: #555;
-  font-size: 1.1em;
-  margin-bottom: 25px;
-}
-
-.correct-order {
-  background: #f8f9fa;
-  border-radius: 8px;
-  padding: 20px;
-  margin-top: 20px;
-  text-align: left;
-}
-
-.correct-event {
-  display: flex;
-  align-items: center;
-  padding: 12px 15px;
-  margin: 10px 0;
-  background: white;
-  border-radius: 6px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-}
-
-.event-number {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 30px;
-  height: 30px;
-  background: #3498db;
-  color: white;
-  border-radius: 50%;
-  margin-right: 15px;
-  font-weight: 600;
-}
-
-.event-title {
-  color: #2c3e50;
-  font-weight: 500;
-}
-
-@keyframes fadeIn {
-  from { 
-    opacity: 0; 
-    transform: translateY(20px);
-  }
-  to { 
-    opacity: 1; 
-    transform: translateY(0);
-  }
-}
-
-/* Responsive design */
-@media (max-width: 768px) {
-  .task-container {
-    padding: 15px;
+/* Touch improvements */
+@media (hover: none) {
+  .event-card {
+    padding: 1.25rem;
   }
   
-  h1 {
-    font-size: 1.8em;
+  .year-card {
+    padding: 0.75rem 1.25rem;
+    min-width: 100px;
   }
-  
-  h2 {
-    font-size: 1.3em;
-  }
-  
-  .timeline-event {
-    padding: 15px;
-  }
-  
-  .event-emoji {
-    font-size: 1.5em;
-  }
-  
-  .success-message {
-    padding: 20px 15px;
-  }
-  
-  .success-message h3 {
-    font-size: 1.5em;
-  }
+}
+
+/* Animation for correct match */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.correct-pulse {
+  animation: pulse 0.5s ease-in-out;
 }
 </style>
