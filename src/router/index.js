@@ -1,8 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHistory('/urban/'),
   routes: [
+    {
+      path: '/',
+      name: 'home',
+      component: () => import('../views/HomeView.vue'),
+    },
     {
       path: '/task3',
       name: 'task3',
@@ -12,12 +17,8 @@ const router = createRouter({
       path: '/task7',
       name: 'task7',
       component: () => import('../views/Task7view.vue'),
-    },
-    {
-      path: '/',
-      name: 'home',
-      component: () => import('../views/HomeView.vue'),
-    },
+    }
+    
   ],
 })
 
