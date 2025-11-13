@@ -1,92 +1,109 @@
 <template>
-  <div class="max-w-5xl mx-auto p-6 bg-white rounded-xl shadow-lg my-4 relative overflow-hidden">
-    <!-- Header Section -->
-    <div class="text-center mb-8 p-6 text-white rounded-xl shadow-md">
-      <h1 class="text-2xl md:text-3xl font-bold mb-2">Sharjah – Al Noor Mosque / Art Museum</h1>
-      <h2 class="text-xl md:text-2xl mb-4 opacity-90">QR Match of Meaning</h2>
+  <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 p-3 md:p-6 transition-colors duration-300">
+    <div class="max-w-3xl mx-auto">
+      <!-- Header Section -->
+      <div class="bg-white rounded-xl shadow-md p-5 mb-6 transition-all duration-200 hover:shadow-sm">
+        <div class="text-center">
+          <span
+            class="inline-block px-2.5 py-0.5 text-[11px] font-semibold text-blue-600 bg-blue-100 rounded-full mb-2">QR
+            MATCH</span>
+          <h1
+            class="text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+            Sharjah – Al Noor Mosque / Art Museum
+          </h1>
+          <div class="w-16 h-0.5 bg-gradient-to-r from-blue-400 to-indigo-400 mx-auto my-3 rounded-full"></div>
+          <h2 class="text-lg text-gray-600 font-medium">QR Match of Meaning</h2>
+        </div>
 
+        <p class="text-sm text-gray-600 text-center max-w-2xl mx-auto mt-3 mb-4 leading-relaxed">
+          Match the icons with their corresponding meanings by dragging and dropping.
+        </p>
 
-      <p class="text-white/90 max-w-3xl mx-auto text-sm md:text-base">
-        Match the icons with their corresponding meanings by dragging and dropping.
-      </p>
-
-      <div class="mt-4 h-2 bg-white/30 rounded-full overflow-hidden">
-        <div class="h-full bg-gradient-to-r from-green-500 to-green-400 transition-all duration-500"
-          :style="{ width: progress + '%' }">
-          <div class="h-full w-full bg-gradient-to-r from-transparent via-white/50 to-transparent">
+        <!-- Progress Bar -->
+        <div class="mt-5">
+          <div class="flex justify-between text-xs text-gray-500 mb-1">
+            <span>Progress</span>
+            <span class="font-medium">{{ Math.round(progress) }}%</span>
+          </div>
+          <div class="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
+            <div
+              class="h-full bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 transition-all duration-500 ease-out"
+              :style="{ width: `${progress}%` }"></div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Matching Game -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-8">
-      <!-- Left Column - Icons -->
-      <div class="bg-white rounded-xl shadow-md p-6 border border-gray-100">
-        <h3 class="text-center text-lg font-semibold text-blue-700 mb-4 pb-2 border-b-2 border-blue-200">Icons</h3>
-        <div class="space-y-3">
-          <div v-for="(item, index) in items" :key="'item-' + index" draggable="true"
-            @dragstart="onDragStart($event, index, 'item')" @dragend="onDragEnd" class="draggable-item" :class="[
-              'p-4 rounded-lg border-2 transition-all duration-200 cursor-move select-none text-lg',
-              item.matched
-                ? 'bg-green-50 border-green-300 text-green-800 pr-10 relative'
-                : 'bg-white border-gray-200 hover:border-blue-400 hover:shadow-md',
-              item.matched ? 'matched-item' : ''
-            ]">
-            <div class="flex items-center space-x-2">
-              <span class="text-xl">{{ item.name.split(' ')[item.name.split(' ').length - 1] }}</span>
-              <span>{{ item.name.split(' ').slice(0, -1).join(' ') }}</span>
+      <!-- Matching Game -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-8">
+        <!-- Left Column - Icons -->
+        <div class="bg-white rounded-xl shadow-md p-6 border border-gray-100">
+          <h3 class="text-center text-lg font-semibold text-blue-700 mb-4 pb-2 border-b-2 border-blue-200">Icons</h3>
+          <div class="space-y-3">
+            <div v-for="(item, index) in items" :key="'item-' + index" draggable="true"
+              @dragstart="onDragStart($event, index, 'item')" @dragend="onDragEnd" class="draggable-item" :class="[
+                'p-4 rounded-lg border-2 transition-all duration-200 cursor-move select-none text-lg',
+                item.matched
+                  ? 'bg-green-50 border-green-300 text-green-800 pr-10 relative'
+                  : 'bg-white border-gray-200 hover:border-blue-400 hover:shadow-md',
+                item.matched ? 'matched-item' : ''
+              ]">
+              <div class="flex items-center space-x-2">
+                <span class="text-xl">{{ item.name.split(' ')[item.name.split(' ').length - 1] }}</span>
+                <span>{{ item.name.split(' ').slice(0, -1).join(' ') }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column - Meanings -->
+        <div class="bg-white rounded-xl shadow-md p-6 border border-gray-100">
+          <h3 class="text-center text-lg font-semibold text-blue-700 mb-4 pb-2 border-b-2 border-blue-200">Meanings</h3>
+          <div class="space-y-3">
+            <div v-for="(meaning, index) in meanings" :key="'meaning-' + index" @dragover.prevent
+              @drop="onDrop($event, index, 'meaning')" :class="[
+                'p-4 rounded-lg transition-all duration-200 min-h-[60px]',
+                meaning.matched && meaning.correct
+                  ? 'bg-green-50 border-2 border-green-300'
+                  : meaning.matched && !meaning.correct
+                    ? 'bg-red-50 border-2 border-red-300 shake-animation'
+                    : 'bg-gray-50 border-2 border-dashed border-gray-300 hover:border-blue-400 hover:bg-blue-50',
+                'drop-zone',
+                { 'highlight': isDraggingOver === index }
+              ]">
+              <div class="font-medium text-gray-800">{{ meaning.text }}</div>
+              <div v-if="meaning.matchedItemIndex !== null"
+                class="mt-2 p-2 bg-white rounded border-l-4 border-orange-400 text-sm text-gray-700 shadow-sm animate-fade-in">
+                {{ items[meaning.matchedItemIndex].name }}
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Right Column - Meanings -->
-      <div class="bg-white rounded-xl shadow-md p-6 border border-gray-100">
-        <h3 class="text-center text-lg font-semibold text-blue-700 mb-4 pb-2 border-b-2 border-blue-200">Meanings</h3>
-        <div class="space-y-3">
-          <div v-for="(meaning, index) in meanings" :key="'meaning-' + index" @dragover.prevent
-            @drop="onDrop($event, index, 'meaning')" :class="[
-              'p-4 rounded-lg transition-all duration-200 min-h-[60px]',
-              meaning.matched
-                ? 'bg-green-50 border-2 border-green-300'
-                : 'bg-gray-50 border-2 border-dashed border-gray-300 hover:border-blue-400 hover:bg-blue-50',
-              'drop-zone',
-              { 'highlight': isDraggingOver === index }
-            ]">
-            <div class="font-medium text-gray-800">{{ meaning.text }}</div>
-            <div v-if="meaning.matchedItemIndex !== null"
-              class="mt-2 p-2 bg-white rounded border-l-4 border-orange-400 text-sm text-gray-700 shadow-sm animate-fade-in">
-              {{ items[meaning.matchedItemIndex].name }}
-            </div>
-          </div>
-        </div>
+      <!-- Success Message -->
+      <div v-if="allMatched"
+        class="mt-8 p-8 text-center bg-gradient-to-r from-green-50 to-blue-50 rounded-xl border-2 border-green-200 animate-fade-in">
+        <div class="text-4xl mb-4">🎉</div>
+        <h3 class="text-2xl font-bold text-green-700 mb-3">Level Complete! 🎉</h3>
+        <p class="text-gray-700 mb-4">Perfect! You've matched all items correctly!</p>
+        <p class="text-lg font-medium mb-6">Your final score: <span class="text-blue-600 font-bold">{{ score }}
+            points</span></p>
+        <button @click="resetGame"
+          class="px-8 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2">
+          Play Again
+        </button>
       </div>
-    </div>
 
-    <!-- Success Message -->
-    <div v-if="allMatched"
-      class="mt-8 p-8 text-center bg-gradient-to-r from-green-50 to-blue-50 rounded-xl border-2 border-green-200 animate-fade-in">
-      <div class="text-4xl mb-4">🎉</div>
-      <h3 class="text-2xl font-bold text-green-700 mb-3">Level Complete! 🎉</h3>
-      <p class="text-gray-700 mb-4">Perfect! You've matched all items correctly!</p>
-      <p class="text-lg font-medium mb-6">Your final score: <span class="text-blue-600 font-bold">{{ score }}
-          points</span></p>
-      <button @click="resetGame"
-        class="px-8 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2">
-        Play Again
-      </button>
-    </div>
-
-    <!-- Game Over Message -->
-    <div v-if="gameOver"
-      class="mt-8 p-8 text-center bg-gradient-to-r from-red-50 to-pink-50 rounded-xl border-2 border-red-200 animate-fade-in">
-      <h3 class="text-2xl font-bold text-red-700 mb-3">Game Over</h3>
-      <p class="text-gray-700 mb-6">You've run out of lives!</p>
-      <button @click="resetGame"
-        class="px-8 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2">
-        Try Again
-      </button>
+      <!-- Game Over Message -->
+      <div v-if="gameOver"
+        class="mt-8 p-8 text-center bg-gradient-to-r from-red-50 to-pink-50 rounded-xl border-2 border-red-200 animate-fade-in">
+        <h3 class="text-2xl font-bold text-red-700 mb-3">Game Over</h3>
+        <p class="text-gray-700 mb-6">You've run out of lives!</p>
+        <button @click="resetGame"
+          class="px-8 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2">
+          Try Again
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -107,11 +124,11 @@ export default {
         { id: 4, name: "Sand dune photo 🏜️", matched: false }
       ],
       meanings: [
-        { id: 0, text: "A. Tribute to UAE's maritime roots and trade heritage", matched: false, matchedItemIndex: null },
-        { id: 1, text: "B. Connection between nature and human endurance", matched: false, matchedItemIndex: null },
-        { id: 2, text: "C. Expression of divine beauty through Arabic script", matched: false, matchedItemIndex: null },
-        { id: 3, text: "D. Symbol of light, learning, and spiritual openness", matched: false, matchedItemIndex: null },
-        { id: 4, text: "E. National pride, strength, and freedom", matched: false, matchedItemIndex: null }
+        { id: 0, text: "A. Tribute to UAE's maritime roots and trade heritage", matched: false, matchedItemIndex: null, correct: null },
+        { id: 1, text: "B. Connection between nature and human endurance", matched: false, matchedItemIndex: null, correct: null },
+        { id: 2, text: "C. Expression of divine beauty through Arabic script", matched: false, matchedItemIndex: null, correct: null },
+        { id: 3, text: "D. Symbol of light, learning, and spiritual openness", matched: false, matchedItemIndex: null, correct: null },
+        { id: 4, text: "E. National pride, strength, and freedom", matched: false, matchedItemIndex: null, correct: null }
       ],
       correctMatches: {
         0: 2,
@@ -164,7 +181,8 @@ export default {
       this.meanings = this.meanings.map((m) => ({
         ...m,
         matched: false,
-        matchedItemIndex: null
+        matchedItemIndex: null,
+        correct: null
       }));
       this.progress = 0;
     },
@@ -189,15 +207,33 @@ export default {
     onDrop(event, dropIndex, dropType) {
       if (this.draggedItemType === "item" && dropType === "meaning") {
         const itemIndex = this.draggedItem;
-        if (this.correctMatches[itemIndex] === dropIndex) {
+        const isCorrect = this.correctMatches[itemIndex] === dropIndex;
+        
+        // Update the matched state
+        this.meanings[dropIndex].matched = true;
+        this.meanings[dropIndex].matchedItemIndex = itemIndex;
+        this.meanings[dropIndex].correct = isCorrect;
+        
+        if (isCorrect) {
           this.items[itemIndex].matched = true;
-          this.meanings[dropIndex].matched = true;
-          this.meanings[dropIndex].matchedItemIndex = itemIndex;
           this.updateProgress();
           
           // Check if all items are matched
           if (this.items.every(item => item.matched)) {
             this.celebrate();
+          }
+        } else {
+          // Shake animation for wrong answer
+          const dropZone = event.target.closest('.drop-zone');
+          if (dropZone) {
+            dropZone.classList.add('shake-animation');
+            setTimeout(() => {
+              dropZone.classList.remove('shake-animation');
+              // Clear the wrong answer after animation
+              this.meanings[dropIndex].matched = false;
+              this.meanings[dropIndex].matchedItemIndex = null;
+              this.meanings[dropIndex].correct = null;
+            }, 1000);
           }
         }
       }
