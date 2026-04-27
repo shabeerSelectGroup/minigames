@@ -1,33 +1,34 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 p-3 md:p-6 transition-colors duration-300">
+  <div class="min-h-screen mg-arcade-page p-3 md:p-6 transition-colors duration-300">
+    <div class="pointer-events-none absolute inset-0 mg-arcade-sparkles mg-arcade-sparkles-anim"></div>
     <div class="max-w-3xl mx-auto">
       <!-- Header Section -->
-      <div class="bg-white rounded-xl shadow-md p-5 mb-6 transition-all duration-200 hover:shadow-sm">
+      <div class="relative mg-arcade-card rounded-xl p-5 mb-6 transition-all duration-200 hover:shadow-sm">
         <div class="text-center space-y-1">
           <div class="flex flex-col items-center -mb-1">
             <img src="@/assets/logo.png" alt="Logo" class="h-10 md:h-12 w-auto">
-            <h1 class="text-xl md:text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+            <h1 class="text-xl md:text-2xl font-bold bg-gradient-to-r from-cyan-300 via-fuchsia-300 to-amber-200 bg-clip-text text-transparent">
               Urban Navigator
-              <div class="text-xs md:text-sm font-medium text-gray-500">Sharjah – Al Noor Mosque / Art Museum</div>
+              <div class="text-xs md:text-sm font-medium text-white/60">Sharjah – Al Noor Mosque / Art Museum</div>
             </h1>
           </div>
-          <div class="w-12 h-0.5 bg-gradient-to-r from-blue-400 to-indigo-400 mx-auto my-1.5 rounded-full"></div>
-          <h2 class="text-base text-gray-600 font-medium">QR Match of Meaning</h2>
+          <div class="w-12 h-0.5 bg-gradient-to-r from-cyan-300 to-fuchsia-300 mx-auto my-1.5 rounded-full"></div>
+          <h2 class="text-base text-white/75 font-medium">QR Match of Meaning</h2>
         </div>
 
-        <p class="text-sm text-gray-600 text-center max-w-2xl mx-auto mt-3 mb-4 leading-relaxed">
+        <p class="text-sm text-white/70 text-center max-w-2xl mx-auto mt-3 mb-4 leading-relaxed">
           Match the icons with their corresponding meanings by dragging and dropping.
         </p>
 
         <!-- Progress Bar -->
         <div class="mt-5">
-          <div class="flex justify-between text-xs text-gray-500 mb-1">
+          <div class="flex justify-between text-xs text-white/60 mb-1">
             <span>Progress</span>
             <span class="font-medium">{{ Math.round(progress) }}%</span>
           </div>
-          <div class="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
+          <div class="w-full bg-white/10 rounded-full h-2 overflow-hidden">
             <div
-              class="h-full bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 transition-all duration-500 ease-out"
+              class="h-full bg-gradient-to-r from-cyan-400 via-fuchsia-400 to-amber-300 transition-all duration-500 ease-out"
               :style="{ width: `${progress}%` }"></div>
           </div>
         </div>
@@ -36,15 +37,15 @@
       <!-- Matching Game -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-8">
         <!-- Left Column - Icons -->
-        <div class="bg-white rounded-xl shadow-md p-6 border border-gray-100">
-          <h3 class="text-center text-lg font-semibold text-blue-700 mb-4 pb-2 border-b-2 border-blue-200">Icons</h3>
+        <div class="relative mg-arcade-card rounded-xl p-6">
+          <h3 class="text-center text-lg font-semibold text-cyan-200 mb-4 pb-2 border-b border-white/10">Icons</h3>
           <div class="space-y-3">
             <div v-for="(item, index) in items" :key="'item-' + index" draggable="true"
               @dragstart="onDragStart($event, index, 'item')" @dragend="onDragEnd" class="draggable-item" :class="[
                 'p-4 rounded-lg border-2 transition-all duration-200 cursor-move select-none text-lg',
                 item.matched
-                  ? 'bg-green-50 border-green-300 text-green-800 pr-10 relative'
-                  : 'bg-white border-gray-200 hover:border-blue-400 hover:shadow-md',
+                  ? 'bg-emerald-400/10 border-emerald-300/40 text-emerald-100 pr-10 relative'
+                  : 'bg-white/5 border-white/10 hover:border-cyan-300/40 hover:shadow-md',
                 item.matched ? 'matched-item' : ''
               ]">
               <div class="flex items-center space-x-2">
@@ -56,23 +57,23 @@
         </div>
 
         <!-- Right Column - Meanings -->
-        <div class="bg-white rounded-xl shadow-md p-6 border border-gray-100">
-          <h3 class="text-center text-lg font-semibold text-blue-700 mb-4 pb-2 border-b-2 border-blue-200">Meanings</h3>
+        <div class="relative mg-arcade-card rounded-xl p-6">
+          <h3 class="text-center text-lg font-semibold text-cyan-200 mb-4 pb-2 border-b border-white/10">Meanings</h3>
           <div class="space-y-3">
             <div v-for="(meaning, index) in meanings" :key="'meaning-' + index" @dragover.prevent
               @drop="onDrop($event, index, 'meaning')" :class="[
                 'p-4 rounded-lg transition-all duration-200 min-h-[60px]',
                 meaning.matched && meaning.correct
-                  ? 'bg-green-50 border-2 border-green-300'
+                  ? 'bg-emerald-400/10 border-2 border-emerald-300/40'
                   : meaning.matched && !meaning.correct
-                    ? 'bg-red-50 border-2 border-red-300 shake-animation'
-                    : 'bg-gray-50 border-2 border-dashed border-gray-300 hover:border-blue-400 hover:bg-blue-50',
+                    ? 'bg-rose-400/10 border-2 border-rose-300/40 shake-animation'
+                    : 'bg-white/5 border-2 border-dashed border-white/15 hover:border-cyan-300/40 hover:bg-cyan-300/5',
                 'drop-zone',
                 { 'highlight': isDraggingOver === index }
               ]">
-              <div class="font-medium text-gray-800">{{ meaning.text }}</div>
+              <div class="font-medium text-white/90">{{ meaning.text }}</div>
               <div v-if="meaning.matchedItemIndex !== null"
-                class="mt-2 p-2 bg-white rounded border-l-4 border-orange-400 text-sm text-gray-700 shadow-sm animate-fade-in">
+                class="mt-2 p-2 bg-black/20 rounded border-l-4 border-amber-300 text-sm text-white/80 shadow-sm animate-fade-in">
                 {{ items[meaning.matchedItemIndex].name }}
               </div>
             </div>
@@ -307,8 +308,8 @@ export default {
 }
 
 .drop-zone.highlight {
-  border: 2px solid #60a5fa;
-  background-color: #eff6ff;
+  border: 2px solid rgba(34, 211, 238, 0.55);
+  background-color: rgba(34, 211, 238, 0.08);
   transform: scale(1.02);
 }
 
@@ -329,7 +330,7 @@ export default {
   right: 0.75rem;
   top: 50%;
   transform: translateY(-50%);
-  color: #16a34a;
+  color: #34d399;
   font-weight: bold;
   font-size: 1.25rem;
 }

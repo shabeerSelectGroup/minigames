@@ -21,6 +21,223 @@
   --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
 }
 
+/* ---- Premium glass launcher theme (Vue-friendly) ---- */
+:root {
+  --mg-font: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Sans", "Apple Color Emoji",
+    "Segoe UI Emoji";
+}
+
+html, body {
+  font-family: var(--mg-font);
+}
+
+@keyframes mg-mesh-shift {
+  0% { background-position: 0% 30%, 80% 10%, 50% 100%, 0 0; }
+  50% { background-position: 100% 50%, 10% 30%, 60% 60%, 0 0; }
+  100% { background-position: 0% 30%, 80% 10%, 50% 100%, 0 0; }
+}
+
+.mg-mesh {
+  background:
+    radial-gradient(1100px 680px at 10% 15%, rgba(34, 211, 238, 0.18), transparent 60%),
+    radial-gradient(900px 620px at 90% 10%, rgba(168, 85, 247, 0.22), transparent 60%),
+    radial-gradient(1000px 700px at 55% 100%, rgba(236, 72, 153, 0.18), transparent 62%),
+    linear-gradient(180deg, #050617 0%, #06081d 55%, #050618 100%);
+  background-size: 200% 200%, 200% 200%, 220% 220%, 100% 100%;
+  animation: mg-mesh-shift 18s ease-in-out infinite;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.mg-noise {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
+  opacity: 0.06;
+  mix-blend-mode: overlay;
+}
+
+.mg-particles {
+  background-image:
+    radial-gradient(rgba(255,255,255,.18) 1px, transparent 1px),
+    radial-gradient(rgba(255,255,255,.10) 1px, transparent 1px);
+  background-size: 26px 26px, 72px 72px;
+  background-position: 0 0, 18px 28px;
+  opacity: 0.35;
+  mask-image: radial-gradient(closest-side, rgba(0, 0, 0, 0.95), transparent);
+}
+
+@keyframes mg-particles-drift {
+  0% { transform: translate3d(0,0,0); }
+  100% { transform: translate3d(70px, 45px, 0); }
+}
+
+.mg-particles-anim {
+  animation: mg-particles-drift 22s linear infinite;
+}
+
+/* mouse-follow light overlay; position set via --mx/--my (px) */
+.mg-mouse-light {
+  background: radial-gradient(500px 380px at var(--mx, 50%) var(--my, 40%), rgba(34, 211, 238, 0.18), transparent 60%);
+  opacity: 0.9;
+}
+
+/* Glass card */
+.mg-launch-card {
+  position: relative;
+  transform-style: preserve-3d;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.06));
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow:
+    0 20px 80px rgba(0, 0, 0, 0.65),
+    0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+/* animated gradient border */
+.mg-launch-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  background: linear-gradient(120deg,
+    rgba(34,211,238,.65),
+    rgba(168,85,247,.55),
+    rgba(236,72,153,.55),
+    rgba(34,211,238,.65)
+  );
+  background-size: 300% 300%;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  -webkit-mask-composite: xor;
+  opacity: 0.55;
+  transition: opacity 220ms ease;
+  pointer-events: none;
+}
+
+@keyframes mg-border-flow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.mg-launch-card:hover::before {
+  opacity: 0.95;
+  animation: mg-border-flow 2.2s ease-in-out infinite;
+}
+
+/* shimmer sweep */
+.mg-launch-card::after {
+  content: "";
+  position: absolute;
+  inset: -40%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
+  transform: translateX(-55%) rotate(12deg);
+  opacity: 0;
+  pointer-events: none;
+}
+
+@keyframes mg-sheen {
+  0% { transform: translateX(-60%) rotate(12deg); opacity: 0; }
+  35% { opacity: 0.22; }
+  100% { transform: translateX(60%) rotate(12deg); opacity: 0; }
+}
+
+.mg-launch-card:hover::after {
+  opacity: 1;
+  animation: mg-sheen 900ms ease-out 1;
+}
+
+.mg-launch-pill {
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.14);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.30);
+}
+
+.mg-launch-pill:hover {
+  box-shadow: 0 14px 40px rgba(34,211,238,0.10);
+}
+
+@keyframes mg-float-soft {
+  0%, 100% { transform: translate3d(0,0,0); }
+  50% { transform: translate3d(0,-8px,0); }
+}
+
+.mg-float-soft {
+  animation: mg-float-soft 6.5s ease-in-out infinite;
+}
+
+/* Per-card floating (stagger via --float-delay) */
+@keyframes mg-float-card {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -10px, 0); }
+}
+
+.mg-float-card {
+  animation: mg-float-card calc(5.2s + var(--float-jitter, 0s)) ease-in-out infinite;
+  animation-delay: var(--float-delay, 0ms);
+}
+
+@keyframes mg-head-float {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -6px, 0); }
+}
+
+.mg-head-float {
+  animation: mg-head-float 7.5s ease-in-out infinite;
+}
+
+@keyframes mg-enter {
+  0% { opacity: 0; transform: translate3d(0, 16px, 0); }
+  100% { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+.mg-enter {
+  opacity: 0;
+  animation: mg-enter 700ms cubic-bezier(0.2, 0.9, 0.2, 1) forwards;
+  animation-delay: var(--d, 0ms);
+}
+
+@keyframes mg-icon-pulse {
+  0%, 100% { transform: translateZ(0) scale(1); }
+  50% { transform: translateZ(0) scale(1.06); }
+}
+
+.mg-icon {
+  position: relative;
+}
+
+.mg-icon::before {
+  content: "";
+  position: absolute;
+  inset: -10px;
+  background: radial-gradient(closest-side, rgba(34,211,238,0.35), transparent 70%);
+  filter: blur(10px);
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+.mg-launch-card:hover .mg-icon {
+  animation: mg-icon-pulse 700ms ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mg-mesh,
+  .mg-particles-anim,
+  .mg-float-soft,
+  .mg-float-card,
+  .mg-head-float,
+  .mg-enter,
+  .mg-launch-card:hover::before,
+  .mg-launch-card:hover::after,
+  .mg-launch-card:hover .mg-icon {
+    animation: none !important;
+  }
+}
+
 /* semantic color variables for this project */
 :root {
   --color-background: var(--vt-c-white);
@@ -34,6 +251,229 @@
   --color-text: var(--vt-c-text-light-1);
 
   --section-gap: 160px;
+}
+
+/* lightweight “gamey” background helpers */
+:root {
+  /* SELECT-ish hero palette (teal → lime/yellow) */
+  --mg-brand-1: #0ea5a4; /* teal */
+  --mg-brand-2: #22c55e; /* green */
+  --mg-brand-3: #facc15; /* yellow */
+}
+
+@keyframes mg-hero-shift {
+  0% { background-position: 0% 50%, 0 0; }
+  50% { background-position: 100% 50%, 90px 60px; }
+  100% { background-position: 0% 50%, 0 0; }
+}
+
+.mg-bg {
+  background:
+    linear-gradient(105deg,
+      rgba(14, 165, 164, 0.82),
+      rgba(34, 197, 94, 0.70),
+      rgba(250, 204, 21, 0.74)
+    ),
+    radial-gradient(rgba(255, 255, 255, 0.22) 1px, rgba(255, 255, 255, 0) 1px);
+  background-size: 200% 200%, 18px 18px;
+  background-position: 0% 50%, 0 0;
+  animation: mg-hero-shift 18s ease-in-out infinite;
+}
+
+.mg-dots {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.30) 1px, transparent 1px);
+  background-size: 18px 18px;
+  background-position: 0 0;
+  mask-image: radial-gradient(closest-side, rgba(0, 0, 0, 0.85), transparent);
+}
+
+/* SELECT-style clean page + image-overlay cards */
+.mg-select-page {
+  background:
+    radial-gradient(900px 500px at 10% 0%, rgba(14, 165, 164, 0.10), transparent 60%),
+    radial-gradient(900px 500px at 90% 10%, rgba(34, 197, 94, 0.08), transparent 55%),
+    linear-gradient(#ffffff, #f5fbfb);
+}
+
+.mg-select-card {
+  background:
+    linear-gradient(180deg, rgba(12, 116, 124, 0.72) 0%, rgba(6, 74, 92, 0.86) 100%),
+    radial-gradient(1200px 700px at 20% 20%, rgba(255, 255, 255, 0.18), transparent 55%),
+    radial-gradient(900px 600px at 70% 70%, rgba(250, 204, 21, 0.10), transparent 60%);
+  box-shadow:
+    0 18px 45px rgba(2, 20, 32, 0.20),
+    0 2px 0 rgba(255, 255, 255, 0.20) inset;
+}
+
+.mg-arcade-page {
+  background:
+    radial-gradient(1100px 650px at 15% 10%, rgba(34, 211, 238, 0.12), transparent 55%),
+    radial-gradient(900px 520px at 85% 20%, rgba(168, 85, 247, 0.14), transparent 55%),
+    radial-gradient(900px 520px at 55% 95%, rgba(251, 146, 60, 0.10), transparent 55%),
+    linear-gradient(180deg, #060814 0%, #070a18 55%, #070919 100%);
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.mg-arcade-sparkles {
+  background-image:
+    radial-gradient(rgba(255, 255, 255, 0.18) 1px, transparent 1px),
+    radial-gradient(rgba(255, 255, 255, 0.10) 1px, transparent 1px);
+  background-size: 24px 24px, 64px 64px;
+  background-position: 0 0, 10px 18px;
+  opacity: 0.35;
+  mask-image: radial-gradient(closest-side, rgba(0, 0, 0, 0.95), transparent);
+}
+
+@keyframes mg-sparkle-drift {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(60px, 40px, 0); }
+}
+
+.mg-arcade-sparkles-anim {
+  animation: mg-sparkle-drift 20s linear infinite;
+}
+
+.mg-arcade-card {
+  position: relative;
+  background:
+    radial-gradient(1200px 700px at 20% 10%, rgba(34, 211, 238, 0.14), transparent 55%),
+    radial-gradient(900px 600px at 85% 35%, rgba(168, 85, 247, 0.16), transparent 60%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.06));
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow:
+    0 18px 60px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+  backdrop-filter: blur(10px);
+}
+
+.mg-arcade-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(900px 520px at 50% 15%, rgba(255, 255, 255, 0.14), transparent 55%),
+    linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.10), transparent);
+  opacity: 0;
+  transition: opacity 180ms ease;
+  pointer-events: none;
+}
+
+.mg-arcade-card:hover::after {
+  opacity: 1;
+}
+
+.mg-arcade-pill {
+  background: rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+/* Modern glassmorphic cards (compact + animated) */
+.mg-glass-page {
+  background:
+    radial-gradient(1200px 720px at 10% 10%, rgba(34, 211, 238, 0.14), transparent 60%),
+    radial-gradient(1000px 620px at 90% 20%, rgba(168, 85, 247, 0.16), transparent 60%),
+    radial-gradient(900px 540px at 55% 100%, rgba(251, 191, 36, 0.10), transparent 60%),
+    linear-gradient(180deg, #050614 0%, #060818 55%, #050716 100%);
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.mg-glass-card {
+  position: relative;
+  transform-style: preserve-3d;
+  background:
+    radial-gradient(900px 520px at 18% 10%, rgba(34, 211, 238, 0.18), transparent 55%),
+    radial-gradient(900px 520px at 82% 30%, rgba(168, 85, 247, 0.18), transparent 58%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.06));
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow:
+    0 22px 70px rgba(0, 0, 0, 0.60),
+    0 0 0 1px rgba(255, 255, 255, 0.06) inset;
+  backdrop-filter: blur(14px);
+}
+
+.mg-glass-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(900px 540px at 50% 10%, rgba(255, 255, 255, 0.18), transparent 55%);
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.mg-glass-card::after {
+  content: "";
+  position: absolute;
+  inset: -40%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.18), transparent);
+  transform: translateX(-40%) rotate(12deg);
+  opacity: 0;
+  pointer-events: none;
+}
+
+@keyframes mg-sheen {
+  0% { transform: translateX(-55%) rotate(12deg); opacity: 0; }
+  35% { opacity: 0.22; }
+  100% { transform: translateX(55%) rotate(12deg); opacity: 0; }
+}
+
+.mg-glass-card:hover::after {
+  opacity: 1;
+  animation: mg-sheen 900ms ease-out 1;
+}
+
+@keyframes mg-icon-float {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -6px, 0); }
+}
+
+.mg-icon-float {
+  animation: mg-icon-float 3.6s ease-in-out infinite;
+}
+
+.mg-glass-pill {
+  background: rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mg-glass-card:hover::after,
+  .mg-icon-float {
+    animation: none !important;
+  }
+}
+
+.mg-select-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(900px 600px at 50% 20%, rgba(255, 255, 255, 0.14), transparent 55%);
+  opacity: 0;
+  transition: opacity 180ms ease;
+  pointer-events: none;
+}
+
+.mg-select-card:hover::after {
+  opacity: 1;
+}
+
+@keyframes mg-dots-drift {
+  0% { background-position: 0 0; }
+  100% { background-position: 90px 60px; }
+}
+
+.mg-dots-anim {
+  animation: mg-dots-drift 18s linear infinite;
+}
+
+@keyframes mg-float {
+  0% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -10px, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+
+.mg-float {
+  animation: mg-float 6.5s ease-in-out infinite;
 }
 
 @media (prefers-color-scheme: dark) {

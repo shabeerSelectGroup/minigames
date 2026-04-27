@@ -18,6 +18,17 @@ const router = createRouter({
       name: 'task7',
       component: () => import('../views/Task7view.vue'),
     }
+    ,
+    {
+      path: '/sketch-the-future',
+      name: 'sketch-the-future',
+      component: () => import('../views/SketchTheFutureView.vue'),
+    },
+    {
+      path: '/trainer',
+      name: 'trainer-results',
+      component: () => import('../views/TrainerResultsView.vue')
+    }
     
   ],
 })
