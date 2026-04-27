@@ -324,7 +324,7 @@
 const ideas = [
   "Sketch your vision for SELECT — what should the experience look like, feel like, and deliver?",
   "Design an idea that makes SELECT more fun, clear, and memorable. Show it as a poster or sketch.",
-  "Create a mini-game / challenge concept for SELECT and illustrate how players interact with it.",
+  "Create a creative and meaningful visual representation of yourself and your journey, highlighting your personality, values, dreams, strengths, and the experiences that have shaped who you are today.",
 ];
  
  const currentIdea = ref("");
