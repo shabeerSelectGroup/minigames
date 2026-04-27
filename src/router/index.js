@@ -23,6 +23,11 @@ const router = createRouter({
       path: '/sketch-the-future',
       name: 'sketch-the-future',
       component: () => import('../views/SketchTheFutureView.vue'),
+    },
+    {
+      path: '/trainer',
+      name: 'trainer-results',
+      component: () => import('../views/TrainerResultsView.vue')
     }
     
   ],
