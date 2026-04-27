@@ -12,10 +12,7 @@
              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
            </svg>
          </router-link>
-         <h1 class="text-2xl md:text-4xl font-black italic tracking-tight uppercase text-emerald-200 drop-shadow-sm px-10">SELECT Vision Canvas</h1>
-         <p class="mt-2 md:mt-4 text-sm md:text-base text-white/70 max-w-2xl mx-auto font-medium leading-relaxed px-4">
-          Draw your vision for SELECT. Work together and present ideas like a poster or sketch.
-         </p>
+        <h1 class="text-2xl md:text-4xl font-black italic tracking-tight uppercase text-emerald-200 drop-shadow-sm px-10">sketch the future</h1>
          <div v-if="isLoggedIn" class="mt-2 md:mt-4 flex items-center justify-center gap-2">
             <span class="px-2 py-0.5 md:px-3 md:py-1 bg-blue-100 text-blue-700 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-wider border border-blue-200">Designer: {{ userName }}</span>
          </div>
@@ -322,8 +319,6 @@
  const eventId = route.query.event || '';
  
 const ideas = [
-  "Sketch your vision for SELECT — what should the experience look like, feel like, and deliver?",
-  "Design an idea that makes SELECT more fun, clear, and memorable. Show it as a poster or sketch.",
   "Create a creative and meaningful visual representation of yourself and your journey, highlighting your personality, values, dreams, strengths, and the experiences that have shaped who you are today.",
 ];
  
@@ -590,6 +585,14 @@ const hideCanvasCursor = () => {
  
  const submitDrawing = async () => {
    if (!drawingCanvas.value || !teamId.value) return;
+
+   if (!explanation.value || !explanation.value.trim()) {
+     submitStatus.value = {
+       type: 'error',
+       message: 'Please explain your innovation before submitting.'
+     };
+     return;
+   }
    
    isSubmitting.value = true;
    submitStatus.value = null;

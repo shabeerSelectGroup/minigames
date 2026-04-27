@@ -85,7 +85,7 @@
                   <div class="mg-icon grid size-11 place-items-center rounded-2xl bg-white/10 text-2xl ring-1 ring-white/15 backdrop-blur">
                     🎨
                   </div>
-                  <h3 class="text-xl font-black leading-tight">Sketch the Future</h3>
+                  <h3 class="text-xl font-black leading-tight">sketch the future</h3>
                 </div>
                 <ul class="relative mt-4 space-y-2 text-sm font-semibold text-white/90">
                   <li class="flex gap-2"><span class="mt-1 size-1.5 shrink-0 rounded-full bg-white/80" />Draw + stamps</li>
